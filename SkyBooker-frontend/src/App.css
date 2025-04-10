@@ -1,0 +1,109 @@
+﻿/* Basis-Styling für den Body */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+/* Styling für die Navigation */
+nav {
+  background-color: #007acc;
+  padding: 1em 2em;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1.5em;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+nav ul li {
+  /* Leichte Transition für Hover */
+  transition: opacity 0.3s ease;
+}
+
+nav ul li:hover {
+  opacity: 0.8;
+}
+
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* Container für Seiteninhalte */
+.container {
+  max-width: 1200px;
+  margin: 2em auto;
+  padding: 1em;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* Allgemeine Überschriften */
+h1, h2 {
+  color: #007acc;
+}
+
+/* Formular-Styling */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+form div {
+  display: flex;
+  flex-direction: column;
+}
+
+form label {
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+form input,
+form button {
+  padding: 0.75em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+/* Button Styling */
+form button {
+  background-color: #007acc;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form button:hover {
+  background-color: #005ea6;
+}
+
+/* Fehlermeldungen */
+.error {
+  color: #d8000c;
+  background-color: #ffbaba;
+  border: 1px solid #d8000c;
+  padding: 0.5em;
+  border-radius: 4px;
+}
+
+/* Responsive Anpassungen */
+@media (max-width: 768px) {
+  nav ul {
+    flex-direction: column;
+    gap: 0.5em;
+  }
+}
