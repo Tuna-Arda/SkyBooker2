@@ -1,0 +1,25 @@
+﻿version: '3.8'
+services:
+  gateway:
+    build: ./src/Gateway/Ocelot.API
+    ports: ['5000:80']
+  auth:
+    build: ./src/AuthService/AuthService.API
+    ports: ['5001:80']
+  flight:
+    build: ./src/FlightService/FlightService.API
+    ports: ['5002:80']
+    depends_on: [mongo]
+  booking:
+    build: ./src/BookingService/BookingService.API
+    ports: ['5003:80']
+    depends_on: [sqlserver, flight]
+  mongo:
+    image: mongo:6
+    ports: ['27017:27017']
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - SA_PASSWORD=Your_password123
+      - ACCEPT_EULA=Y
+    ports: ['1433:1433']

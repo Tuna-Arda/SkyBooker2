@@ -1,0 +1,13 @@
+C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\AuthService\AuthService.Infrastructure\obj\Debug\net9.0\AuthService.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\AuthService\AuthService.Infrastructure\obj\Debug\net9.0\AuthService.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\AuthService\AuthService.Infrastructure\obj\Debug\net9.0\AuthService.Infrastructure.AssemblyInfo.cs
+C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\AuthService\AuthService.Infrastructure\obj\Debug\net9.0\AuthService.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\AuthService\AuthService.Infrastructure\obj\Debug\net9.0\AuthService.Infrastructure.sourcelink.json
+C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\AuthService\AuthService.Infrastructure\bin\Debug\net9.0\AuthService.Infrastructure.deps.json
+C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\AuthService\AuthService.Infrastructure\bin\Debug\net9.0\AuthService.Infrastructure.dll
+C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\AuthService\AuthService.Infrastructure\bin\Debug\net9.0\AuthService.Infrastructure.pdb
+C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\AuthService\AuthService.Infrastructure\obj\Debug\net9.0\AuthService.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\AuthService\AuthService.Infrastructure\obj\Debug\net9.0\AuthService.Infrastructure.dll
+C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\AuthService\AuthService.Infrastructure\obj\Debug\net9.0\refint\AuthService.Infrastructure.dll
+C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\AuthService\AuthService.Infrastructure\obj\Debug\net9.0\AuthService.Infrastructure.pdb
+C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\AuthService\AuthService.Infrastructure\obj\Debug\net9.0\ref\AuthService.Infrastructure.dll

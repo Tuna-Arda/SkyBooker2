@@ -1,0 +1,6 @@
+C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\BookingService\BookingService.Application\obj\Debug\net9.0\BookingService.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\BookingService\BookingService.Application\obj\Debug\net9.0\BookingService.Application.AssemblyInfoInputs.cache
+C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\BookingService\BookingService.Application\obj\Debug\net9.0\BookingService.Application.AssemblyInfo.cs
+C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\BookingService\BookingService.Application\obj\Debug\net9.0\BookingService.Application.csproj.CoreCompileInputs.cache
+C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\BookingService\BookingService.Application\obj\Debug\net9.0\BookingService.Application.sourcelink.json
+C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\BookingService\BookingService.Application\obj\Debug\net9.0\BookingService.Application.csproj.AssemblyReference.cache
