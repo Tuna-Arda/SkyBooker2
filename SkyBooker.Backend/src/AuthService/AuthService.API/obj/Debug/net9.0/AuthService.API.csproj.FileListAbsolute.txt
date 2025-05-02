@@ -1,8 +1,0 @@
-C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\AuthService\AuthService.API\obj\Debug\net9.0\AuthService.API.csproj.AssemblyReference.cache
-C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\AuthService\AuthService.API\obj\Debug\net9.0\AuthService.API.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\AuthService\AuthService.API\obj\Debug\net9.0\AuthService.API.AssemblyInfoInputs.cache
-C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\AuthService\AuthService.API\obj\Debug\net9.0\AuthService.API.AssemblyInfo.cs
-C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\AuthService\AuthService.API\obj\Debug\net9.0\AuthService.API.csproj.CoreCompileInputs.cache
-C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\AuthService\AuthService.API\obj\Debug\net9.0\AuthService.API.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\AuthService\AuthService.API\obj\Debug\net9.0\AuthService.API.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\erzincansivas\Documents\Modul321\SkyBooker\SkyBooker.Backend\src\AuthService\AuthService.API\obj\Debug\net9.0\AuthService.API.sourcelink.json

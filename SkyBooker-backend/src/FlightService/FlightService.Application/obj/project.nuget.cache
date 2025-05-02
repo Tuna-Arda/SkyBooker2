@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "sNtWGOqccrM=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\erzincansivas\\Documents\\Modul321\\SkyBooker\\src\\FlightService\\FlightService.Application\\FlightService.Application.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\erzincansivas\\.nuget\\packages\\fluentvalidation\\11.11.0\\fluentvalidation.11.11.0.nupkg.sha512"
+  ],
+  "logs": []
+}
