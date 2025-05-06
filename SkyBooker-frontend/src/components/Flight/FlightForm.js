@@ -7,13 +7,13 @@ const FlightForm = () => {
   const { token } = useContext(AuthContext);
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    flightId: "",
-    airlineName: "",
-    source: "",
-    destination: "",
-    departure_time: "",
-    arrival_time: "",
-    available_seats: 0
+    FlightId: "",
+    AirlineName: "",
+    Source: "",
+    Destination: "",
+    DepartureTime: "",
+    ArrivalTime: "",
+    AvailableSeats: 0
   });
   const [error, setError] = useState(null);
 
@@ -33,37 +33,37 @@ const FlightForm = () => {
   };
 
   return (
-    <div>
+    <div className="container">
       <h2>Add Flight</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="error">{error}</p>}
       <form onSubmit={handleSubmit}>
         <div>
           <label>Flight ID:</label>
-          <input name="flightId" value={form.flightId} onChange={handleChange} required />
+          <input name="FlightId" value={form.FlightId} onChange={handleChange} required />
         </div>
         <div>
           <label>Airline Name:</label>
-          <input name="airlineName" value={form.airlineName} onChange={handleChange} required />
+          <input name="AirlineName" value={form.AirlineName} onChange={handleChange} required />
         </div>
         <div>
           <label>Source:</label>
-          <input name="source" value={form.source} onChange={handleChange} required />
+          <input name="Source" value={form.Source} onChange={handleChange} required />
         </div>
         <div>
           <label>Destination:</label>
-          <input name="destination" value={form.destination} onChange={handleChange} required />
+          <input name="Destination" value={form.Destination} onChange={handleChange} required />
         </div>
         <div>
           <label>Departure Time:</label>
-          <input name="departure_time" type="datetime-local" value={form.departure_time} onChange={handleChange} required />
+          <input name="DepartureTime" type="datetime-local" value={form.DepartureTime} onChange={handleChange} required />
         </div>
         <div>
           <label>Arrival Time:</label>
-          <input name="arrival_time" type="datetime-local" value={form.arrival_time} onChange={handleChange} required />
+          <input name="ArrivalTime" type="datetime-local" value={form.ArrivalTime} onChange={handleChange} required />
         </div>
         <div>
           <label>Available Seats:</label>
-          <input name="available_seats" type="number" value={form.available_seats} onChange={handleChange} required />
+          <input name="AvailableSeats" type="number" value={form.AvailableSeats} onChange={handleChange} required />
         </div>
         <button type="submit">Add Flight</button>
       </form>
