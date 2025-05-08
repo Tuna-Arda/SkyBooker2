@@ -1,79 +1,68 @@
 using FlightService.Models;
+using MongoDB.Driver;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FlightService.Repositories
 {
     public interface IFlightRepository
     {
-        IEnumerable<Flight> GetAll();
-        Flight GetById(string id);
-        void Add(Flight flight);
-        void Update(Flight flight);
-        void Delete(string id);
+        Task<IEnumerable<Flight>> GetAllAsync();
+        Task<Flight> GetByIdAsync(string id);
+        Task<Flight> AddAsync(Flight flight);
+        Task<bool> UpdateAsync(string id, Flight flight);
+        Task<bool> DeleteAsync(string id);
+        Task<bool> UpdateAvailableSeatsAsync(string id, int seatCount);
     }
 
     public class FlightRepository : IFlightRepository
     {
-        private readonly List<Flight> _flights = new List<Flight>();
+        private readonly IMongoCollection<Flight> _flights;
 
-        public FlightRepository()
+        public FlightRepository(IMongoClient mongoClient, IConfiguration configuration)
         {
-            // Add some sample flights
-            _flights.Add(new Flight
-            {
-                Id = "1",
-                FlightId = "LH123",
-                AirlineName = "Lufthansa",
-                Source = "Zurich",
-                Destination = "Berlin",
-                DepartureTime = DateTime.Now.AddDays(5),
-                ArrivalTime = DateTime.Now.AddDays(5).AddHours(2),
-                AvailableSeats = 120
-            });
-
-            _flights.Add(new Flight
-            {
-                Id = "2",
-                FlightId = "SWR456",
-                AirlineName = "Swiss",
-                Source = "Geneva",
-                Destination = "London",
-                DepartureTime = DateTime.Now.AddDays(7),
-                ArrivalTime = DateTime.Now.AddDays(7).AddHours(2),
-                AvailableSeats = 80
-            });
+            var database = mongoClient.GetDatabase(configuration["MongoDB:DatabaseName"]);
+            _flights = database.GetCollection<Flight>(configuration["MongoDB:CollectionName"]);
         }
 
-        public IEnumerable<Flight> GetAll()
+        public async Task<IEnumerable<Flight>> GetAllAsync()
         {
-            return _flights;
+            return await _flights.Find(flight => true).ToListAsync();
         }
 
-        public Flight GetById(string id)
+        public async Task<Flight> GetByIdAsync(string id)
         {
-            return _flights.FirstOrDefault(f => f.Id == id);
+            return await _flights.Find(flight => flight.Id == id).FirstOrDefaultAsync();
         }
 
-        public void Add(Flight flight)
+        public async Task<Flight> AddAsync(Flight flight)
         {
-            _flights.Add(flight);
+            await _flights.InsertOneAsync(flight);
+            return flight;
         }
 
-        public void Update(Flight flight)
+        public async Task<bool> UpdateAsync(string id, Flight flight)
         {
-            var index = _flights.FindIndex(f => f.Id == flight.Id);
-            if (index != -1)
-            {
-                _flights[index] = flight;
-            }
+            flight.UpdatedAt = DateTime.Now;
+            var result = await _flights.ReplaceOneAsync(f => f.Id == id, flight);
+            return result.IsAcknowledged && result.ModifiedCount > 0;
         }
 
-        public void Delete(string id)
+        public async Task<bool> DeleteAsync(string id)
         {
-            var flight = GetById(id);
-            if (flight != null)
-            {
-                _flights.Remove(flight);
-            }
+            var result = await _flights.DeleteOneAsync(flight => flight.Id == id);
+            return result.IsAcknowledged && result.DeletedCount > 0;
+        }
+
+        public async Task<bool> UpdateAvailableSeatsAsync(string id, int seatCount)
+        {
+            var flight = await GetByIdAsync(id);
+            if (flight == null || flight.AvailableSeats < seatCount)
+                return false;
+
+            flight.AvailableSeats -= seatCount;
+            flight.UpdatedAt = DateTime.Now;
+            return await UpdateAsync(id, flight);
         }
     }
 }

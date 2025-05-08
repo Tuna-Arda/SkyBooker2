@@ -10,66 +10,96 @@ namespace FlightService.Controllers
     public class FlightController : ControllerBase
     {
         private readonly IFlightRepository _flightRepository;
+        private readonly ILogger<FlightController> _logger;
 
-        public FlightController(IFlightRepository flightRepository)
+        public FlightController(IFlightRepository flightRepository, ILogger<FlightController> logger)
         {
             _flightRepository = flightRepository;
+            _logger = logger;
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var flights = _flightRepository.GetAll();
+            _logger.LogInformation("Getting all flights");
+            var flights = await _flightRepository.GetAllAsync();
             return Ok(flights);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(string id)
+        public async Task<IActionResult> GetById(string id)
         {
-            var flight = _flightRepository.GetById(id);
+            _logger.LogInformation($"Getting flight with ID: {id}");
+            var flight = await _flightRepository.GetByIdAsync(id);
             if (flight == null)
+            {
+                _logger.LogWarning($"Flight with ID: {id} not found");
                 return NotFound();
+            }
 
             return Ok(flight);
         }
 
         [HttpPost]
         [Authorize]
-        public IActionResult Create([FromBody] Flight flight)
+        public async Task<IActionResult> Create([FromBody] Flight flight)
         {
-            if (flight == null)
-                return BadRequest();
-
-            flight.Id = Guid.NewGuid().ToString();
-            _flightRepository.Add(flight);
-
+            _logger.LogInformation("Creating a new flight");
+            await _flightRepository.AddAsync(flight);
             return CreatedAtAction(nameof(GetById), new { id = flight.Id }, flight);
         }
 
         [HttpPut("{id}")]
         [Authorize]
-        public IActionResult Update(string id, [FromBody] Flight flight)
+        public async Task<IActionResult> Update(string id, [FromBody] Flight flight)
         {
-            if (flight == null || id != flight.Id)
+            _logger.LogInformation($"Updating flight with ID: {id}");
+            if (id != flight.Id)
                 return BadRequest();
 
-            var existingFlight = _flightRepository.GetById(id);
+            var existingFlight = await _flightRepository.GetByIdAsync(id);
             if (existingFlight == null)
                 return NotFound();
 
-            _flightRepository.Update(flight);
+            var result = await _flightRepository.UpdateAsync(id, flight);
+            if (!result)
+                return StatusCode(500);
+
+            return NoContent();
+        }
+
+        [HttpPut("{id}/seats")]
+        [Authorize]
+        public async Task<IActionResult> UpdateSeats(string id, [FromBody] UpdateSeatsRequest request)
+        {
+            _logger.LogInformation($"Updating seats for flight with ID: {id}");
+            var result = await _flightRepository.UpdateAvailableSeatsAsync(id, request.TicketCount);
+            if (!result)
+                return BadRequest("Not enough seats available or flight not found");
+
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         [Authorize]
-        public IActionResult Delete(string id)
+        public async Task<IActionResult> Delete(string id)
         {
-            var flight = _flightRepository.GetById(id);
+            _logger.LogInformation($"Deleting flight with ID: {id}");
+            var flight = await _flightRepository.GetByIdAsync(id);
             if (flight == null)
+            {
+                _logger.LogWarning($"Flight with ID: {id} not found");
                 return NotFound();
+            }
 
-            _flightRepository.Delete(id);
+            var result = await _flightRepository.DeleteAsync(id);
+            if (!result)
+            {
+                _logger.LogError($"Failed to delete flight with ID: {id}");
+                return StatusCode(500, "Failed to delete the flight");
+            }
+            
+            _logger.LogInformation($"Flight with ID: {id} deleted successfully");
             return NoContent();
         }
     }

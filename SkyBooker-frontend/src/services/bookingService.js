@@ -1,4 +1,5 @@
-﻿const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:8080/api";
+﻿// When running in Docker, we need to use the gateway container name instead of localhost
+const API_BASE = process.env.REACT_APP_API_URL || "http://gateway:80/api";
 
 export const getBookings = async () => {
   const response = await fetch(`${API_BASE}/booking`, {

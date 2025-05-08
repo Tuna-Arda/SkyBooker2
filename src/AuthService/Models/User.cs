@@ -1,23 +1,21 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace AuthService.Models
 {
     public class User
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
+        
+        [Required]
+        [StringLength(50)]
         public string Username { get; set; }
+        
+        [Required]
+        [EmailAddress]
+        [StringLength(100)]
         public string Email { get; set; }
-        public string Password { get; set; }
-    }
-
-    public class LoginModel
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
-    }
-
-    public class RegisterModel
-    {
-        public string Username { get; set; }
-        public string Email { get; set; }
+        
+        [Required]
         public string Password { get; set; }
     }
 }

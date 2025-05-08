@@ -1,74 +1,105 @@
 version: '3.8'
 
 services:
-  auth-service:
-    build:
-      context: ./src/AuthService
-      dockerfile: Dockerfile
-    container_name: skybooker-auth-service
-    restart: always
-    networks:
-      - skybooker-network
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-
-  flight-service:
-    build:
-      context: ./src/FlightService
-      dockerfile: Dockerfile
-    container_name: skybooker-flight-service
-    restart: always
-    networks:
-      - skybooker-network
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    depends_on:
-      - auth-service
-
-  booking-service:
-    build:
-      context: ./src/BookingService
-      dockerfile: Dockerfile
-    container_name: skybooker-booking-service
-    restart: always
-    networks:
-      - skybooker-network
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    depends_on:
-      - auth-service
-      - flight-service
-
-  gateway:
-    build:
-      context: ./src/Gateway
-      dockerfile: Dockerfile
-    container_name: skybooker-gateway
-    restart: always
-    ports:
-      - "8080:80"
-    networks:
-      - skybooker-network
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    depends_on:
-      - auth-service
-      - flight-service
-      - booking-service
-
+  # Frontend
   frontend:
     build:
       context: ./SkyBooker-frontend
       dockerfile: Dockerfile
-    container_name: skybooker-frontend
-    restart: always
     ports:
       - "3000:80"
-    networks:
-      - skybooker-network
+    environment:
+      - REACT_APP_API_URL=http://localhost:8080/api
+    volumes:
+      - ./SkyBooker-frontend/.env:/app/.env
     depends_on:
       - gateway
+    networks:
+      - skybooker-network
+
+  # API Gateway
+  gateway:
+    build:
+      context: ./src/Gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - CORS_ORIGINS=http://localhost:3000
+    depends_on:
+      - flightservice
+      - bookingservice
+      - authservice
+    networks:
+      - skybooker-network
+
+  # Auth Service
+  authservice:
+    build:
+      context: ./src/AuthService
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__SqliteConnection=Data Source=auth.db
+    networks:
+      - skybooker-network
+
+  # Flight Service
+  flightservice:
+    build:
+      context: ./src/FlightService
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__MongoDb=mongodb://mongodb:27017
+      - MongoDB__DatabaseName=FlightDb
+      - MongoDB__CollectionName=flights
+    depends_on:
+      - mongodb
+    networks:
+      - skybooker-network
+
+  # Booking Service
+  bookingservice:
+    build:
+      context: ./src/BookingService
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=BookingDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;
+    depends_on:
+      - sqlserver
+    networks:
+      - skybooker-network
+
+  # SQL Server
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong@Passw0rd
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - skybooker-network
+
+  # MongoDB
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - skybooker-network
 
 networks:
   skybooker-network:
     driver: bridge
+
+volumes:
+  sqlserver_data:
+  mongodb_data:

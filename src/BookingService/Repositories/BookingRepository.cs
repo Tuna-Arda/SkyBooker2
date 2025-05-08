@@ -1,66 +1,80 @@
+using BookingService.Data;
 using BookingService.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookingService.Repositories
 {
     public interface IBookingRepository
     {
-        IEnumerable<Booking> GetAll();
-        Booking GetById(string id);
-        void Add(Booking booking);
-        void Update(Booking booking);
-        void Delete(string id);
+        Task<IEnumerable<Booking>> GetAllAsync();
+        Task<Booking> GetByIdAsync(string id);
+        Task<Booking> AddAsync(Booking booking);
+        Task<bool> UpdateAsync(Booking booking);
+        Task<bool> DeleteAsync(string id);
     }
 
     public class BookingRepository : IBookingRepository
     {
-        private readonly List<Booking> _bookings = new List<Booking>();
+        private readonly BookingDbContext _context;
 
-        public BookingRepository()
+        public BookingRepository(BookingDbContext context)
         {
-            // Add some sample bookings
-            _bookings.Add(new Booking
+            _context = context;
+        }
+
+        public async Task<IEnumerable<Booking>> GetAllAsync()
+        {
+            return await _context.Bookings.ToListAsync();
+        }
+
+        public async Task<Booking> GetByIdAsync(string id)
+        {
+            return await _context.Bookings.FindAsync(id);
+        }
+
+        public async Task<Booking> AddAsync(Booking booking)
+        {
+            _context.Bookings.Add(booking);
+            await _context.SaveChangesAsync();
+            return booking;
+        }
+
+        public async Task<bool> UpdateAsync(Booking booking)
+        {
+            booking.UpdatedAt = DateTime.Now;
+            _context.Entry(booking).State = EntityState.Modified;
+            
+            try
             {
-                Id = "1",
-                FlightId = "1",
-                PassengerId = "1",
-                PassengerFirstname = "Max",
-                PassengerLastname = "Mustermann",
-                TicketCount = 2,
-                BookingDate = DateTime.Now.AddDays(-3)
-            });
-        }
-
-        public IEnumerable<Booking> GetAll()
-        {
-            return _bookings;
-        }
-
-        public Booking GetById(string id)
-        {
-            return _bookings.FirstOrDefault(b => b.Id == id);
-        }
-
-        public void Add(Booking booking)
-        {
-            _bookings.Add(booking);
-        }
-
-        public void Update(Booking booking)
-        {
-            var index = _bookings.FindIndex(b => b.Id == booking.Id);
-            if (index != -1)
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateConcurrencyException)
             {
-                _bookings[index] = booking;
+                if (!await BookingExists(booking.Id))
+                {
+                    return false;
+                }
+                throw;
             }
         }
 
-        public void Delete(string id)
+        public async Task<bool> DeleteAsync(string id)
         {
-            var booking = GetById(id);
-            if (booking != null)
+            var booking = await _context.Bookings.FindAsync(id);
+            if (booking == null)
             {
-                _bookings.Remove(booking);
+                return false;
             }
+
+            _context.Bookings.Remove(booking);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        private async Task<bool> BookingExists(string id)
+        {
+            return await _context.Bookings.AnyAsync(e => e.Id == id);
         }
     }
 }

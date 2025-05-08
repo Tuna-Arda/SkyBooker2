@@ -1,10 +1,6 @@
 using AuthService.Models;
-using AuthService.Repositories;
+using AuthService.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace AuthService.Controllers
 {
@@ -12,75 +8,64 @@ namespace AuthService.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IConfiguration _configuration;
+        private readonly IUserService _userService;
+        private readonly IJwtService _jwtService;
+        private readonly ILogger<AuthController> _logger;
 
-        public AuthController(IUserRepository userRepository, IConfiguration configuration)
+        public AuthController(IUserService userService, IJwtService jwtService, ILogger<AuthController> logger)
         {
-            _userRepository = userRepository;
-            _configuration = configuration;
+            _userService = userService;
+            _jwtService = jwtService;
+            _logger = logger;
         }
 
         [HttpPost("register")]
-        public IActionResult Register([FromBody] RegisterModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            if (model == null)
-                return BadRequest("Invalid registration data");
-
-            if (_userRepository.GetByUsername(model.Username) != null)
-                return Conflict("Username already exists");
-
-            var user = new User
-            {
-                Id = Guid.NewGuid().ToString(),
-                Username = model.Username,
-                Email = model.Email,
-                Password = BCrypt.Net.BCrypt.HashPassword(model.Password)
-            };
-
-            _userRepository.Add(user);
-            return Ok(new { message = "Registration successful" });
-        }
-
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginModel model)
-        {
-            var user = _userRepository.GetByUsername(model.Username);
+            _logger.LogInformation($"Registration attempt for username: {model.Username}");
             
-            if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
-                return Unauthorized("Invalid credentials");
+            if (await _userService.UserExists(model.Username, model.Email))
+                return BadRequest(new { message = "Username or Email already exists" });
 
-            var token = GenerateJwtToken(user);
+            var user = await _userService.Register(model);
 
+            if (user == null)
+                return BadRequest(new { message = "User registration failed" });
+
+            // Generate token
+            var token = _jwtService.GenerateToken(user);
+
+            // Return basic user info and token
             return Ok(new
             {
-                token,
-                user = new { id = user.Id, username = user.Username, email = user.Email }
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email,
+                Token = token
             });
         }
 
-        private string GenerateJwtToken(User user)
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            _logger.LogInformation($"Login attempt for username: {model.Username}");
+            
+            var user = await _userService.Authenticate(model.Username, model.Password);
 
-            var claims = new[]
+            if (user == null)
+                return Unauthorized(new { message = "Username or password is incorrect" });
+
+            // Generate token
+            var token = _jwtService.GenerateToken(user);
+
+            // Return basic user info and token
+            return Ok(new
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-                new Claim(JwtRegisteredClaimNames.Name, user.Username),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddHours(1),
-                signingCredentials: credentials
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email,
+                Token = token
+            });
         }
     }
 }

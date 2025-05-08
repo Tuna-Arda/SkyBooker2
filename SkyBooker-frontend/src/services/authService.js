@@ -1,14 +1,20 @@
-﻿const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:8080/api";
+﻿const API_BASE = process.env.REACT_APP_API_URL;
 
 export const loginUser = async (username, password) => {
   const response = await fetch(`${API_BASE}/login`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "Accept": "application/json"
     },
     body: JSON.stringify({ username, password })
   });
-  if (!response.ok) throw new Error("Login failed");
+  
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(error || "Login failed");
+  }
+  
   return response.json();
 };
 
